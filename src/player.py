@@ -14,7 +14,10 @@ class Player:
         self.pos_y += dy
 
     def can_move(self, x, y, grid):
-        return True
         #TODO: returnera True om det inte står något i vägen
+        if grid.is_empty(x, y):
+            return True
+        return False
+
 
 

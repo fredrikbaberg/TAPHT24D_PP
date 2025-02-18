@@ -9,7 +9,7 @@ class Item:
     def __str__(self):
         return self.symbol
 
-
+# TODO: D. Fruksallad - alla frukter ska vara värda 20 poäng i stället för 10.
 pickups = [Item("carrot"), Item("apple"), Item("strawberry"), Item("cherry"), Item("watermelon"), Item("radish"), Item("cucumber"), Item("meatball")]
 
 
