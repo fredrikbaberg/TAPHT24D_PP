@@ -36,20 +36,44 @@ def test_player__move_y_negative():
     assert [player.pos_x, player.pos_y] == expected
 
 def test_player__can_move_to_empty():
-    player = Player(1, 1)
-    grid = FakeGrid()
+    player = Player(0, 0)
+    grid = FakeGrid(1, 1)
     expected = True
     assert player.can_move(0, 0, grid) == expected
 
 def test_player__can_move_to_non_empty():
-    player = Player(1, 1)
-    grid = FakeGrid()
+    player = Player(0, 0)
+    grid = FakeGrid(2, 2)
+    grid.set(1, 0, grid.wall)
     expected = False
     assert player.can_move(1, 0, grid) == expected
 
+def test_player__move_outside_grid():
+    player = Player(0, 0)
+    grid = FakeGrid(1, 1)
+    assert player.can_move(1, 0, grid) == False
+
+class FakeItem:
+    pass
+
 class FakeGrid:
+    empty = '.'
+    wall = "■"
+    item = FakeItem()
+
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.data = [[self.empty for y in range(self.width)] for z in range(
+            self.height)]
+
     def is_empty(self, x, y):
-        """ During testing of Player, returns False if x is odd. """
-        if x%2==0:
+        if self.data[y][x] == self.empty:
             return True
         return False
+
+    def set(self, x, y, value):
+        self.data[y][x] = value
+
+    def get(self, x, y):
+        return self.data[y][x]

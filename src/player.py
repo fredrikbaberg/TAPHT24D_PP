@@ -14,9 +14,12 @@ class Player:
         self.pos_y += dy
 
     def can_move(self, x, y, grid):
-        #TODO: returnera True om det inte står något i vägen
-        if grid.is_empty(x, y):
-            return True
+        #DONE: returnera True om det inte står något i vägen
+        # Spaden gör att spelaren kan hamna utanför planen, kolla gränserna.
+        if 0 <= self.pos_x+x < grid.width and 0 <= self.pos_y+y < grid.height:
+            # Kollar endast efter väggar.
+            if grid.get(self.pos_x+x, self.pos_y+y) != grid.wall:
+                return True
         return False
 
 

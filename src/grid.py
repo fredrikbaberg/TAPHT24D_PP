@@ -54,7 +54,9 @@ class Grid:
             self.set(j, self.height - 1, self.wall)
 
         # TODO: H. Använd for-loopar för at skapa flera, sammanhängande väggar på kartan. Se till att det inte skapas några rum som man inte kan komma in i.
-
+        for col in range(3, self.width, int(self.width/3)):
+            for row in range(self.height-4, self.height-1):
+                self.set(col, row, self.wall)
 
     # Används i filen pickups.py
     def get_random_x(self):
@@ -74,8 +76,16 @@ class Grid:
     def get_empty_near_center(self):
         """ Returnerar koordinater för en tom runta nära centrum."""
         # Rör sig runt mittpunkten för att hitta en lämplig startpunkt.
-        start_pos = [int(self.width/2), int(self.height/2)]
-        # while True:
-        #     if self.is_empty(start_pos[0], start_pos[1]):
-        #         player.pos_x = 
-        pass
+        position = [int(self.width/2), int(self.height/2)]
+        # Första 9 kombinationer av startpositioner.
+        offsets = []
+        for row in [0, 1, -1]:
+            for col in [0, 1, -1]:
+                offsets.append([row,col])
+        add_coordinates = lambda x, y: [x[0]+y[0], x[1]+y[1]]
+        for offset in offsets:
+            test_position = add_coordinates(position, offset)
+            if self.is_empty(test_position[0], test_position[1]):
+                return test_position
+        raise Exception("Kunde inte hitta en kombination som fungerar.")
+    

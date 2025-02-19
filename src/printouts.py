@@ -7,4 +7,5 @@ def print_status(game_grid, score):
 def print_inventory(inventory):
     """Skriv ut inventory."""
     print("--------------------------------------")
-    print(f"Your inventory contains: {inventory}.")
+    items = [i.name for i in inventory]
+    print(f"Your inventory contains: {", ".join(items)}")
