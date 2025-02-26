@@ -1,20 +1,26 @@
+"""Testar modulen input."""
 from src.inputs import move
 
 
 class FakePlayer:
+    """Fake av Player"""
     def __init__(self, pos_x, pos_y):
         self.pos_x = pos_x
         self.pos_y = pos_y
 
     def move(self, dx, dy):
+        """Flyttar dx, dy."""
         self.pos_x += dx
         self.pos_y += dy
 
 class FakeGrid:
-    def get(self, x, y):
-        pass
+    """Fake av Grid"""
+    def get(self, x, y): #pylint: disable=unused-argument
+        """Hämta värde från x, y."""
+        return
 
 def test_move_left():
+    """Spelaren kan flytta sig åt vänster"""
     move_x = -1
     move_y = 0
     grid = FakeGrid()
@@ -28,11 +34,13 @@ def test_move_left():
     assert actual_y == expected_y
 
 def test_move_right():
-    pass
+    """Spelaren kan flytta sig åt höger"""
+    return
 
 def test_move_up():
-    pass
+    """Spelaren kan flytta sig uppåt"""
+    return
 
 def test_move_down():
-    pass
-
+    """Spelaren kan flytta sig nedåt"""
+    return

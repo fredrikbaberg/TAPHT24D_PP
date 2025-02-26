@@ -1,4 +1,7 @@
+"""Representera spelaren med en klass."""
+
 class Player:
+    """Klass som representerar spelaren."""
     marker = "@"
 
     def __init__(self, x, y):
@@ -14,6 +17,16 @@ class Player:
         self.pos_y += dy
 
     def can_move(self, x, y, grid):
+        """Kontrollera om en position är giltig att flytta sig till.
+
+        Args:
+            x (_type_): horisontell position.
+            y (_type_): vertikal position.
+            grid (_type_): Instans av Grid som representerar kartan.
+
+        Returns:
+            _type_: _description_
+        """
         #DONE: returnera True om det inte står något i vägen
         # Spaden gör att spelaren kan hamna utanför planen, kolla gränserna.
         if 0 <= self.pos_x+x < grid.width and 0 <= self.pos_y+y < grid.height:
@@ -21,6 +34,3 @@ class Player:
             if grid.get(self.pos_x+x, self.pos_y+y) != grid.wall:
                 return True
         return False
-
-
-

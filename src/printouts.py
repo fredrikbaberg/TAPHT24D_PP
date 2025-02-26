@@ -1,3 +1,5 @@
+"""Utskrifter av spelplan, inventory."""
+
 def print_status(game_grid, score):
     """Visa spelvärlden och antal poäng."""
     print("--------------------------------------")

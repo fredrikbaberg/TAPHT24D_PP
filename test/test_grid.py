@@ -1,15 +1,16 @@
+"""Test av modulen grid"""
 import pytest
 from src.grid import Grid
 
 
 def test_grid__set_player_center():
-    # Spelaren börjar i mittpunkten.
+    """Spelaren börjar i mittpunkten."""
     grid = Grid(10, 10)
     position = grid.get_empty_near_center()
     assert position == [5, 5]
 
 def test_grid__set_player_center_not_possible_use_ninth():
-    # Spelaren kan inte starta i mittpunkten, gå igenom listan med kombinationer.
+    """Spelaren kan inte starta i mittpunkten, gå igenom listan med kombinationer."""
     grid = Grid(10, 10)
     for row in [0,1,-1]:
         for col in [0,1,-1]:
@@ -19,7 +20,7 @@ def test_grid__set_player_center_not_possible_use_ninth():
     assert position == [4, 4]
 
 def test_grid__set_player_center_not_possible_raises_exception():
-    # Spelaren kan inte starta i mittpunkten, ingen kombination fungerar.
+    """Spelaren kan inte starta i mittpunkten, ingen kombination fungerar."""
     grid = Grid(10, 10)
     for row in [0,1,-1]:
         for col in [0,1,-1]:

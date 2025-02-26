@@ -1,13 +1,13 @@
+"""Reagera på indata."""
+
 def handle_input(command):
     """ Reagera på indata. Antar att command är i lowercase (casefold)"""
     # Rörelser.
     if command in ["w", "a", "s", "d"]:
         pass
-    
+
     if command == "i":
         pass
-    pass
-
 
 def move(move_x, move_y, grid, player):
     """ Försök flytta spelaren. """
