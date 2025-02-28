@@ -1,5 +1,5 @@
 """Startpunkt för spelet."""
-
+import random
 from .grid import Grid
 from .player import Player
 from . import pickups
@@ -19,7 +19,7 @@ g.make_walls()
 pickups.randomize(g, pickups.pickups)
 
 
-
+turn_counter = 0 # Håll koll på vilket drag spelaren är på. #pylint: disable=invalid-name
 command = "a" # pylint: disable=invalid-name
 # Loopa tills användaren trycker Q eller X.
 while not command.casefold() in ["q", "x"]:
@@ -55,9 +55,11 @@ while not command.casefold() in ["q", "x"]:
             print(f"You found a {maybe_item.name}, +{maybe_item.value} points.")
             g.clear(player.pos_x, player.pos_y)
 
-        # TODO: L. Bördig jord - efter varje 25:e drag skapas en\n
-        # ny frukt/grönsak någonstans på kartan.
-        # Idé: pickups.randomize(g, number).
+        # DONE: L. Bördig jord - efter varje 25:e drag skapas en ny frukt/grönsak någonstans på kartan.
+        global turn_counter #pylint: disable=global-statement
+        turn_counter += 1
+        if turn_counter % 5 == 0:
+            pickups.randomize(g, random.sample(pickups.pickups, 1))
 
     # DONE: B. Förflyttning i alla 4 riktningar (WASD)
     # DONE: C. Man ska inte kunna gå igenom väggar.
