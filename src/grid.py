@@ -1,6 +1,10 @@
 """Klass som representerar spelplanen."""
 import random
 
+# Liten hjälpfunktion för att lägga ihop två koordinater.
+add_coordinates = lambda x, y: [x[0]+y[0], x[1]+y[1]] #pylint: disable=unnecessary-lambda-assignment
+
+
 class Grid:
     """Representerar spelplanen. Du kan ändra standardstorleken och tecknen för olika rutor. """
     # Storleken sätts i konstruktor, för att enklare kunna testa olika storlekar.
@@ -40,7 +44,8 @@ class Grid:
         for y in range(len(self.data)):
             row = self.data[y]
             for x in range(len(row)):
-                if x == self.player.pos_x and y == self.player.pos_y:
+                # Kollar om player har något värde först, för att undvika AttributeError.
+                if self.player is not None and x == self.player.pos_x and y == self.player.pos_y:
                     xs += "@"
                 else:
                     xs += str(row[x])
@@ -50,7 +55,7 @@ class Grid:
 
 
     def make_walls(self):
-        """Skapa väggar runt hela spelplanen"""
+        """Skapa väggar runt hela spelplanen och invändigt."""
         for i in range(self.height):
             self.set(0, i, self.wall)
             self.set(self.width - 1, i, self.wall)
@@ -81,18 +86,19 @@ class Grid:
 
 
     def get_empty_near_center(self):
-        """Returnerar koordinater för en tom ruta nära centrum."""
-        # Rör sig runt mittpunkten för att hitta en lämplig startpunkt.
+        """Returnerar koordinater för en tom ruta nära centrum.
+        Lyfter Exception om ingen av de första 9 rutorna fungerar.
+        """
+        # Ungefärlig mittpunkt.
         position = [int(self.width/2), int(self.height/2)]
-        # Första 9 kombinationer av startpositioner.
+        # Ta fram första 9 kombinationerna av startpositioner.
         offsets = []
         for row in [0, 1, -1]:
             for col in [0, 1, -1]:
                 offsets.append([row,col])
-        add_coordinates = lambda x, y: [x[0]+y[0], x[1]+y[1]] #pylint: disable=unnecessary-lambda-assignment
         for offset in offsets:
             test_position = add_coordinates(position, offset)
             if self.is_empty(test_position[0], test_position[1]):
                 return test_position
-        # Hittade inget mer specifikt som passar, så använder Exception.
+        # Hittade inget mer specifikt felmeddelande som passar, så använder Exception.
         raise Exception("Kunde inte hitta en kombination som fungerar.") #pylint: disable=broad-exception-raised
