@@ -55,7 +55,7 @@ class Grid:
 
 
     def make_walls(self):
-        """Skapa väggar runt hela spelplanen och invändigt."""
+        """Skapa väggar runt hela spelplanen"""
         for i in range(self.height):
             self.set(0, i, self.wall)
             self.set(self.width - 1, i, self.wall)
@@ -64,11 +64,40 @@ class Grid:
             self.set(j, 0, self.wall)
             self.set(j, self.height - 1, self.wall)
 
-        # TODO: H. Använd for-loopar för at skapa flera, sammanhängande väggar på kartan.\n
-        # Se till att det inte skapas några rum som man inte kan komma in i.
-        for col in range(3, self.width, int(self.width/3)):
-            for row in range(self.height-4, self.height-1):
-                self.set(col, row, self.wall)
+    # TODO: H. Använd for-loopar för att skapa flera, sammanhängande väggar på kartan.
+    # Se till att det inte skapas några rum som man inte kan komma in i. Gör detta i filen grid.py.
+    def make_inner_walls(self, length_of_walls=10):
+        """Skapa inre väggar.
+
+        Kommer slumpa en vägg per sida. Summan av väggarnas längder ges som argument, 
+        men varje väggs längd slumpas. Obs: Om två väggar överlappar blir längden kortare.
+        """
+        wall_lengths = [] # Kommer innehålla: övre, nedre, vänstra, högra väggens längd.
+        for _ in range(0, 3):
+            wall_lengths.append(random.randint(0, length_of_walls-sum(wall_lengths)))
+        wall_lengths.append(length_of_walls-sum(wall_lengths))
+        # För vänster och höger sida skulle slicing kunna användas direkt på grid.data, förutsatt
+        # att den förblir publik. Håller mig till set för att ha samma struktur på alla sidor.
+        # Övre vägg
+        column = random.randint(2, self.width-2)
+        for row in range(1, wall_lengths[0]+1):
+            self.set(column, row, self.wall)
+        # Nedre vägg
+        column = random.randint(2, self.width-2)
+        for row in range(1, wall_lengths[1]+1):
+            self.set(column, self.height-row-1, self.wall)
+        # Vänster vägg.
+        row = random.randint(2, self.height-2)
+        for column in range(1, wall_lengths[2]+1):
+            self.set(column, row, self.wall)
+        # Höger vägg
+        row = random.randint(2, self.height-2)
+        for column in range(1, wall_lengths[3]+1):
+            self.set(self.width-column-1, row, self.wall)
+        # # Nästade for-loopar kan ge återkommande mönster men inte mycket variation.
+        # # for col in range(3, self.width, int(self.width/3)):
+        # #     for row in range(self.height-4, self.height-1):
+        # #         self.set(col, row, self.wall)
 
     # Används i filen pickups.py
     def get_random_x(self):
@@ -102,3 +131,40 @@ class Grid:
                 return test_position
         # Hittade inget mer specifikt felmeddelande som passar, så använder Exception.
         raise Exception("Kunde inte hitta en kombination som fungerar.") #pylint: disable=broad-exception-raised
+
+def check_no_isolated_rooms(grid):
+    """Kolla att det går att nå alla rum.
+
+    Använder bredd-först-sökning."""
+    directions = [(1,0), (0,1), (-1,0), (0,-1)]
+    visited = []
+    start = None
+    # Hitta en punkt att börja från.
+    for col in range(0, grid.width):
+        for row in range(0, grid.height):
+            if grid.is_empty(col, row):
+                start = (row, col)
+                break
+        if start:
+            break
+    # Lägg till startpunkten och alla grannar i en kö för att kollas.
+    queue = [start]
+    while queue:
+        to_check = queue.pop() # Hämta en punkt som ska besökas.
+        visited.append(to_check)
+        for direction in directions: # Försök lägga till grannar.
+            new = tuple(add_coordinates(to_check, direction))
+            # Kontrollera att koordinaten går att nå.
+            if 0 <= new[0] < grid.width and 0 <= new[1] < grid.height:
+                if grid.is_empty(new[0], new[1]) and new not in visited:
+                    queue.append(new)
+    # Skapa en lista med alla koordinater som borde kunna besökas
+    should_have_been_visited = []
+    for col in range(0, grid.width):
+        for row in range(0, grid.height):
+            if grid.is_empty(col, row):
+                should_have_been_visited.append((col, row))
+    # Ta bort kopior genom att göra om till set och tillbaka till tuple.
+    visited = tuple(set(visited))
+    should_have_been_visited = tuple(set(should_have_been_visited))
+    return should_have_been_visited == visited

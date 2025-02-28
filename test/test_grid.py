@@ -1,6 +1,7 @@
 """Test av modulen grid"""
 import pytest
-from src.grid import Grid
+import random
+from src.grid import Grid, check_no_isolated_rooms
 
 
 def test_grid__get_empty_near_center_empty():
@@ -43,7 +44,7 @@ def test_grid__can_print_player():
     grid_as_text = str(grid)
     assert grid_as_text.count('@') == 1
 
-def test_grid__make_walls__outer():
+def test_grid__make_walls():
     """Kontrollera att yttre väggar skapas."""
     grid = Grid(5, 5)
     grid.make_walls()
@@ -58,6 +59,39 @@ def test_grid__make_walls__outer():
         actual += 0 if grid.get(0, row) is grid.empty else 1
         actual += 0 if grid.get(4, row) is grid.empty else 1
     assert expected == actual
+
+def test_grid__make_inner_walls():
+    """Kontrollera att inre väggar skapas."""
+    random.seed(28) # Mindre slump i detta test, ett värde där kollisioner inte sker.
+    grid = Grid(10, 10)
+    expected = 10
+    grid.make_inner_walls(expected)
+    number_walls = 0
+    for col in range(0, grid.width):
+        for row in range(0, grid.height):
+            if grid.get(col, row) == grid.wall:
+                number_walls += 1
+    assert number_walls == expected
+
+def test_grid__check_no_isolated_rooms__no_isolated_returns_true():
+    """Kontrollera att det inte finns rum man inte kan komma in i, vid öppen karta."""
+    grid = Grid()
+    expected = True
+    actual = check_no_isolated_rooms(grid)
+    assert actual == expected
+
+def test_grid__check_no_isolated_rooms__isolated_returns_false():
+    """Kontrollera att det inte finns rum man inte kan komma in i, """
+    grid = Grid(10, 10)
+    for col in range(3, 6):
+        grid.set(col, 3, grid.wall)
+        grid.set(col, 5, grid.wall)
+    for row in range(3, 6):
+        grid.set(3, row, grid.wall)
+        grid.set(5, row, grid.wall)
+    expected = False
+    actual = check_no_isolated_rooms(grid)
+    assert actual == expected
 
 class FakePlayer: #pylint: disable=too-few-public-methods
     """Fake av klassen Player."""
