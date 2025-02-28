@@ -77,9 +77,9 @@ pickups = [
 ]
 
 
-def randomize(grid, pickups): #pylint: disable=dangerous-default-value
+def randomize(grid, items=pickups): #pylint: disable=dangerous-default-value
     """Slumpa föremål på kartan."""
-    for item in pickups:
+    for item in items:
         while True:
             # slumpa en position tills vi hittar en som är ledig
             x = grid.get_random_x()

@@ -16,7 +16,7 @@ empty_center_position = g.get_empty_near_center()
 player = Player(empty_center_position[0], empty_center_position[1])
 g.set_player(player)
 g.make_walls()
-pickups.randomize(g)
+pickups.randomize(g, pickups.pickups)
 
 
 
