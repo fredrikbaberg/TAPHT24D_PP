@@ -1,5 +1,5 @@
-"""Testa modulen pickups."""
-from src.pickups import Fruit, randomize, Item
+"""Test för modulen pickups."""
+from src.pickups import Fruit, randomize, Item, count_pickups
 
 
 def test_pickups__randomize_adds_item():
@@ -21,6 +21,22 @@ def test_pickups__randomize_adds_item():
     print(f"{grid.data}")
     assert number_of_items == len(pickups)
 
+def test_pickups__count_items_empty_grid():
+    """Räkna antal Item på en tom karta."""
+    expected = 0
+    grid = FakeGrid()
+    actual = count_pickups(grid, Item)
+    assert actual == expected
+
+def test_pickups__count_items_full_grid():
+    """Räkna antal Item på en fylld karta."""
+    expected = 25
+    grid = FakeGrid()
+    for i in range(0, grid.width):
+        for j in range(0, grid.height):
+            grid.set(i, j, Item(''))
+    actual = count_pickups(grid, Item)
+    assert actual == expected
 
 class FakeGrid:
     """Fake av Grid"""
@@ -54,3 +70,7 @@ class FakeGrid:
     def set(self, x, y, item):
         """Sätt ett värde för koordinaten."""
         self.data[y][x] = item
+
+    def get(self, x, y):
+        """Hämta värde för en viss koordinat."""
+        return self.data[y][x]
