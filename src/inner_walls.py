@@ -32,4 +32,9 @@ def get_coordinates_for_randomized_wall(width, height, length_of_walls):
     row = random.randint(2, height-2) if (height-2-2) > 0 else 1
     for column in range(1, wall_lengths[3]+1):
         walls.append([width-column-1, row])
+    # Lägger till några extra väggar med for-loopar, för att säkerställa att jag når målet.
+    # Ger återkommande mönster men inte lika varierande.
+    for col in range(3, width, int(width/3)):
+        for row in range(height-4, height-1):
+            walls.append([col, row])
     return walls
