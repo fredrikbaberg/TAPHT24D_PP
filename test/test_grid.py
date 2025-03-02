@@ -1,7 +1,8 @@
 """Test av modulen grid"""
-import pytest
 import random
-from src.grid import Grid, check_no_isolated_rooms
+import pytest
+from src.bfs import check_no_isolated_rooms
+from src.grid import Grid
 
 
 def test_grid__get_empty_near_center_empty():
@@ -62,7 +63,7 @@ def test_grid__make_walls():
 
 def test_grid__make_inner_walls():
     """Kontrollera att inre väggar skapas."""
-    random.seed(28) # Mindre slump i detta test, ett värde där kollisioner inte sker.
+    random.seed(28) # Mindre slump i detta test, använd ett värde där kollisioner inte sker.
     grid = Grid(10, 10)
     expected = 10
     grid.make_inner_walls(expected)
