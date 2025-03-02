@@ -1,5 +1,6 @@
 """Startpunkt för spelet."""
 import random
+
 from .grid import Grid
 from .player import Player
 from . import pickups
@@ -16,7 +17,9 @@ empty_center_position = g.get_empty_near_center()
 player = Player(empty_center_position[0], empty_center_position[1])
 g.set_player(player)
 g.make_walls()
+g.make_inner_walls(10) # Skapa inre väggar.
 pickups.randomize(g, pickups.pickups)
+pickups.randomize(g, [pickups.Exit()]) # Lägg till en utgång.
 
 
 turn_counter = 0 # Håll koll på vilket drag spelaren är på. #pylint: disable=invalid-name
@@ -46,7 +49,12 @@ while not command.casefold() in ["q", "x"]:
         # Avsiktligt val: alltid -1 poäng, även om spelaren försöker gå in i en vägg.
         score -= 1
 
-        if isinstance(maybe_item, pickups.Item):
+        if isinstance(maybe_item, pickups.Exit):
+            # Kontrollera om det finns några andra pickups kvar på kartan.
+            # Om inte, avsluta.
+            if pickups.count_pickups(g, pickups.Item) == 1:
+                print("Klar")
+        elif isinstance(maybe_item, pickups.Item):
             # we found something
             # DONE: E. Inventory - alla saker som man plockar upp ska sparas i en lista.
             inventory.append(maybe_item)
@@ -55,10 +63,11 @@ while not command.casefold() in ["q", "x"]:
             print(f"You found a {maybe_item.name}, +{maybe_item.value} points.")
             g.clear(player.pos_x, player.pos_y)
 
-        # DONE: L. Bördig jord - efter varje 25:e drag skapas en ny frukt/grönsak någonstans på kartan.
+        # DONE: L. Bördig jord - efter varje 25:e drag skapas en ny frukt/grönsak någonstans\n
+        # på kartan.
         global turn_counter #pylint: disable=global-statement
         turn_counter += 1
-        if turn_counter % 5 == 0:
+        if turn_counter % 25 == 0:
             pickups.randomize(g, random.sample(pickups.pickups, 1))
 
     # DONE: B. Förflyttning i alla 4 riktningar (WASD)
