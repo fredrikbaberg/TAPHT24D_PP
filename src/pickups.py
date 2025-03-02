@@ -8,15 +8,15 @@ class Item:
         self.name = name
         self.value = value
         self.symbol = symbol
-        self.original = original # För att hålla koll på om det genererats senare.
+        self.original = original # För att hålla koll på om det fanns från början.
 
     def __str__(self):
         return self.symbol
 
 class Fruit(Item):
     """ Frukt, ett Item med värde 20 poäng. """
-    def __init__(self, name, symbol='?'):
-        super().__init__(name=name, value=20, symbol=symbol)
+    def __init__(self, name, symbol='?', original=True):
+        super().__init__(name=name, value=20, symbol=symbol, original=original)
 
 class Shovel(Item):
     """ Spade. Inga poäng, kan ta bort en vägg en gång. """
@@ -26,7 +26,7 @@ class Shovel(Item):
 class Key(Item):
     """ Nyckel, krävs för att öppna kista. """
     def __init__(self):
-        super().__init__(name='key', value=0, symbol='🗝')
+        super().__init__(name='key', value=0, symbol='🗝') # Symbolen tar 1.5 ruta, men ser trevligare ut.
 
 class Treasure(Item):
     """ Skatt. Ligger i skattkista. """
@@ -60,8 +60,17 @@ def randomize(grid, items=pickups): #pylint: disable=dangerous-default-value
                 break  # avbryt while-loopen, fortsätt med nästa varv i for-loopen
 
 def get_random_extra_item():
-    """Hämta slumpmässigt föremål."""
-    random_item = random.choice(pickups)
-    random_item.original = False # För att veta att det lagts till senare.
-    random_item.symbol = '¿' # Annan symbol, för att användaren ska se att det tillkommit senare.
+    """Hämta slumpmässigt föremål. Se till att original=False"""
+    random_item = random.choice(
+        [
+            Item("carrot", original=False, symbol='¿'),
+            Fruit("apple", original=False, symbol='¿'),
+            Fruit("strawberry", original=False, symbol='¿'),
+            Fruit("cherry", original=False, symbol='¿'),
+            Fruit("watermelon", original=False, symbol='¿'),
+            Item("radish", original=False, symbol='¿'),
+            Item("cucumber", original=False, symbol='¿'),
+            Item("meatball", original=False, symbol='¿'),
+        ]
+    )
     return random_item
