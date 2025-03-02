@@ -27,8 +27,8 @@ class Player:
         Returns:
             _type_: _description_
         """
-        #DONE: returnera True om det inte står något i vägen
-        # Spaden skulle kunna göra att spelaren kan hamna utanför kartan, behöver kolla det.
+        # DONE: returnera True om det inte står något i vägen
+        # Spaden skulle kunna göra att spelaren kan hamna utanför kartan, behöver kolla gränser.
         if 0 <= self.pos_x+x < grid.width and 0 <= self.pos_y+y < grid.height:
             # DONE: C. Man ska inte kunna gå igenom väggar.
             if grid.get(self.pos_x+x, self.pos_y+y) != grid.wall:
