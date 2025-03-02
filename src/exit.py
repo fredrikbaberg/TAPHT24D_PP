@@ -2,8 +2,7 @@
 
 class Exit:
     """Representerar utgång."""
-    def __init__(self, name, symbol="E"):
-        self.name = name
+    def __init__(self, symbol="E"):
         self.symbol = symbol
 
     def __str__(self):
