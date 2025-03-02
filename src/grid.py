@@ -1,5 +1,9 @@
 """Klass som representerar spelplanen."""
+from copy import deepcopy
 import random
+
+from src.bfs import check_no_isolated_rooms
+from src.inner_walls import get_coordinates_for_randomized_wall
 
 class Grid:
     """Representerar spelplanen. Du kan ändra standardstorleken och tecknen för olika rutor. """
@@ -40,7 +44,8 @@ class Grid:
         for y in range(len(self.data)):
             row = self.data[y]
             for x in range(len(row)):
-                if x == self.player.pos_x and y == self.player.pos_y:
+                # Kollar om player har något värde först, för att undvika AttributeError.
+                if self.player is not None and x == self.player.pos_x and y == self.player.pos_y:
                     xs += "@"
                 else:
                     xs += str(row[x])
@@ -59,11 +64,29 @@ class Grid:
             self.set(j, 0, self.wall)
             self.set(j, self.height - 1, self.wall)
 
-        # TODO: H. Använd for-loopar för at skapa flera, sammanhängande väggar på kartan.\n
-        # Se till att det inte skapas några rum som man inte kan komma in i.
-        for col in range(3, self.width, int(self.width/3)):
-            for row in range(self.height-4, self.height-1):
-                self.set(col, row, self.wall)
+    # DONE: H. Använd for-loopar för att skapa flera, sammanhängande väggar på kartan.
+    # Se till att det inte skapas några rum som man inte kan komma in i. Gör detta i filen grid.py.
+    def make_inner_walls(self, length_of_walls=10):
+        """Skapa inre väggar.
+
+        Kommer slumpa en vägg per sida, sammanhängande med avseende på ytterväggarna.
+        Summan av väggarnas längder ges som argument men varje väggs längd slumpas.
+        Obs: Överlappar två väggar blir antalet väggar lägre.
+        """
+        while True:
+            # Hämta en lista över koordinater där väggarna ska finnas.
+            walls = get_coordinates_for_randomized_wall(self.width, self.height, length_of_walls)
+            # Kontrollera att inga isolerade rum finns.
+            # Spara nuvarande konfiguration av väggar, behöver deepcopy för nästad lista.
+            original_data = deepcopy(self.data)
+            for coordinate in walls: # Skriv väggarna till grid.
+                self.set(coordinate[0], coordinate[1], self.wall)
+            # Om det finns isolerade rum, återställ och försök igen.
+            if check_no_isolated_rooms(self) is False:
+                print("Det finns isolerade rum, försöker igen.")
+                self.data = deepcopy(original_data)
+            else:
+                break
 
     # Används i filen pickups.py
     def get_random_x(self):
@@ -78,21 +101,3 @@ class Grid:
     def is_empty(self, x, y):
         """Returnerar True om det inte finns något på aktuell ruta"""
         return self.get(x, y) == self.empty
-
-
-    def get_empty_near_center(self):
-        """Returnerar koordinater för en tom ruta nära centrum."""
-        # Rör sig runt mittpunkten för att hitta en lämplig startpunkt.
-        position = [int(self.width/2), int(self.height/2)]
-        # Första 9 kombinationer av startpositioner.
-        offsets = []
-        for row in [0, 1, -1]:
-            for col in [0, 1, -1]:
-                offsets.append([row,col])
-        add_coordinates = lambda x, y: [x[0]+y[0], x[1]+y[1]] #pylint: disable=unnecessary-lambda-assignment
-        for offset in offsets:
-            test_position = add_coordinates(position, offset)
-            if self.is_empty(test_position[0], test_position[1]):
-                return test_position
-        # Hittade inget mer specifikt som passar, så använder Exception.
-        raise Exception("Kunde inte hitta en kombination som fungerar.") #pylint: disable=broad-exception-raised

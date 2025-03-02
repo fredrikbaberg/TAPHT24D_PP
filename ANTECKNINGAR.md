@@ -76,3 +76,8 @@ Kontrollera att ditt repo är publikt innan du lämnar in. Ladda sedan upp en te
 * och eventuella andra kommentarer
 
 För att bli godkänd måste all kod finnas med i repot och projektet ska gå att köra utan fel.
+
+
+### Extra
+Använder pytest-cov för code coverage, kräver separat installation:
+`pip install pytest-cov`

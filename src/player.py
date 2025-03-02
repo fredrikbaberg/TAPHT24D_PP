@@ -20,17 +20,17 @@ class Player:
         """Kontrollera om en position är giltig att flytta sig till.
 
         Args:
-            x (_type_): horisontell position.
-            y (_type_): vertikal position.
-            grid (_type_): Instans av Grid som representerar kartan.
+            x (int): horisontell position.
+            y (int): vertikal position.
+            grid (Grid): Instans av Grid som representerar kartan.
 
         Returns:
             _type_: _description_
         """
-        #DONE: returnera True om det inte står något i vägen
-        # Spaden gör att spelaren kan hamna utanför planen, kolla gränserna.
+        # DONE: returnera True om det inte står något i vägen
+        # Spaden skulle kunna göra att spelaren kan hamna utanför kartan, behöver kolla gränser.
         if 0 <= self.pos_x+x < grid.width and 0 <= self.pos_y+y < grid.height:
-            # Kollar endast efter väggar.
+            # DONE: C. Man ska inte kunna gå igenom väggar.
             if grid.get(self.pos_x+x, self.pos_y+y) != grid.wall:
                 return True
         return False
