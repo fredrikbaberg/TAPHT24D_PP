@@ -11,3 +11,7 @@ def print_inventory(inventory):
     print("--------------------------------------")
     items = [i.name for i in inventory]
     print(f"Your inventory contains: {", ".join(items)}")
+
+def print_result(score, steps):
+    """Skriv ut resultat av omgången."""
+    print(f"You got a score of {score} after {steps} steps.")
