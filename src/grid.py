@@ -87,10 +87,6 @@ class Grid:
                 self.data = deepcopy(original_data)
             else:
                 break
-        # # Nästade for-loopar kan ge återkommande mönster men inte mycket variation.
-        # # for col in range(3, self.width, int(self.width/3)):
-        # #     for row in range(self.height-4, self.height-1):
-        # #         self.set(col, row, self.wall)
 
     # Används i filen pickups.py
     def get_random_x(self):
