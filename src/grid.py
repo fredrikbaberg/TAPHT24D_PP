@@ -3,7 +3,6 @@ from copy import deepcopy
 import random
 
 from src.bfs import check_no_isolated_rooms
-from src.coordinate_helpers import add_coordinates
 from src.inner_walls import get_coordinates_for_randomized_wall
 
 class Grid:
@@ -74,19 +73,15 @@ class Grid:
         Summan av väggarnas längder ges som argument men varje väggs längd slumpas.
         Obs: Överlappar två väggar blir antalet väggar lägre.
         """
-        print(self)
         while True:
             # Hämta en lista över koordinater där väggarna ska finnas.
             walls = get_coordinates_for_randomized_wall(self.width, self.height, length_of_walls)
-
-            # Kontrollera att inga isolerade rum finns
-            # Spara nuvarande konfiguration av väggar
-            original_data = deepcopy(self.data) # Behöver deepcopy för nästad lista.
-            # Skriv väggarna.
-            for coordinate in walls:
+            # Kontrollera att inga isolerade rum finns.
+            # Spara nuvarande konfiguration av väggar, behöver deepcopy för nästad lista.
+            original_data = deepcopy(self.data)
+            for coordinate in walls: # Skriv väggarna till grid.
                 self.set(coordinate[0], coordinate[1], self.wall)
-            print(self)
-            # Återställ och upprepa om det finns isolerade rum.
+            # Om det finns isolerade rum, återställ och försök igen.
             if check_no_isolated_rooms(self) is False:
                 print("Det finns isolerade rum, försöker igen.")
                 self.data = deepcopy(original_data)
@@ -110,22 +105,3 @@ class Grid:
     def is_empty(self, x, y):
         """Returnerar True om det inte finns något på aktuell ruta"""
         return self.get(x, y) == self.empty
-
-
-    def get_empty_near_center(self):
-        """Returnerar koordinater för en tom ruta nära centrum.
-        Lyfter Exception om ingen av de första 9 rutorna fungerar.
-        """
-        # Ungefärlig mittpunkt.
-        position = [int(self.width/2), int(self.height/2)]
-        # Ta fram första 9 kombinationerna av startpositioner.
-        offsets = []
-        for row in [0, 1, -1]:
-            for col in [0, 1, -1]:
-                offsets.append([row,col])
-        for offset in offsets:
-            test_position = add_coordinates(position, offset)
-            if self.is_empty(test_position[0], test_position[1]):
-                return test_position
-        # Hittade inget mer specifikt felmeddelande som passar, så använder Exception.
-        raise Exception("Kunde inte hitta en kombination som fungerar.") #pylint: disable=broad-exception-raised
