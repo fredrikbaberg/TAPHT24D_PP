@@ -1,12 +1,14 @@
 """Olika typer av föremål att plocka upp."""
 #pylint: disable=too-few-public-methods # Ingorera varning att klasser har för få publika metoder.
+import random
 
 class Item:
     """Representerar saker man kan plocka upp."""
-    def __init__(self, name, value=10, symbol="?"):
+    def __init__(self, name, value=10, symbol="?", original=True):
         self.name = name
         self.value = value
         self.symbol = symbol
+        self.original = original # För att hålla koll på om det genererats senare.
 
     def __str__(self):
         return self.symbol
@@ -18,26 +20,8 @@ class Fruit(Item):
 
 class Shovel(Item):
     """ Spade. Inga poäng, kan ta bort en vägg en gång. """
-    # TODO: J. Spade - en ny sak man kan plocka upp. När man går in i en vägg nästa gång,\n
-    # förbrukas spaden för att ta bort väggen.
-    def __init__(self):
-        super().__init__(name='shovel', value=0, symbol='🥄')
-
-class Trap(Item):
-    """ Fälla. Ska ligga kvar på kartan. """
-    # TODO: I. Fällor - introducera valfri fälla till spelplanen. Om man går på en ruta med en\n
-    # fälla ska man förlora 10 poäng. Fällan ska ligga kvar så att man kan falla i den flera gånger.
-    def __init__(self):
-        super().__init__(name='trap', value=-10, symbol='🕳️')
-
-class Chest(Item):
-    """ Kista, kräver nyckel för att öppnas. """
-    # TODO: K. Nycklar och kistor - slumpa minst en nyckel och lika många kistor på spelplanen.\n
-    # När man går på en ruta med en nyckel plockar man upp den i sitt inventory. Om man kommer\n
-    # till en kista och har minst en nyckel, öppnar man kistan och plockar upp en skatt som är\n
-    # värd 100 poäng. (Nyckeln är förbrukad.)
-    def __init__(self):
-        super().__init__(name='chest', value=0, symbol='💼')
+    def __init__(self, symbol='?'):
+        super().__init__(name='shovel', value=0, symbol=symbol)
 
 class Key(Item):
     """ Nyckel, krävs för att öppna kista. """
@@ -57,13 +41,6 @@ class Treasure(Item):
     def __init__(self):
         super().__init__(name='treasure', value=100, symbol='👑')
 
-class Exit(Item):
-    """ Utgång. Kräver att alla ursprungliga saker är upplockade. """
-    # TODO: M. Exit - slumpa ett "E" på kartan. När man har plockat upp alla ursprungliga saker,\n
-    # kan man gå till exit för att vinna spelet. Men innan man tagit upp alla har inte Exit någon\n
-    # effekt.
-    def __init__(self):
-        super().__init__(name='exit', value=0, symbol='E')
 
 # DONE: D. Fruktsallad - alla frukter ska vara värda 20 poäng i stället för 10.
 pickups = [
@@ -74,7 +51,8 @@ pickups = [
     Fruit("watermelon"),
     Item("radish"),
     Item("cucumber"),
-    Item("meatball")
+    Item("meatball"),
+    Shovel()
 ]
 
 
@@ -89,12 +67,9 @@ def randomize(grid, items=pickups): #pylint: disable=dangerous-default-value
                 grid.set(x, y, item)
                 break  # avbryt while-loopen, fortsätt med nästa varv i for-loopen
 
-def count_pickups(grid, instance_type):
-    """ Räkna antal pickups av en viss sort på kartan."""
-    number_pickups = 0
-    for col in range(0, len(grid.data)):
-        for row in range(0, len(grid.data[0])):
-            maybe_item = grid.get(col, row)
-            if isinstance(maybe_item, instance_type):
-                number_pickups += 1
-    return number_pickups
+def get_random_extra_item():
+    """Hämta slumpmässigt föremål."""
+    random_item = random.choice(pickups)
+    random_item.original = False # För att veta att det lagts till senare.
+    random_item.symbol = '¿' # Annan symbol, för att användaren ska se att det tillkommit senare.
+    return random_item
