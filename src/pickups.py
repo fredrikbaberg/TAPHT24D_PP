@@ -25,19 +25,11 @@ class Shovel(Item):
 
 class Key(Item):
     """ Nyckel, krävs för att öppna kista. """
-    # TODO: K. Nycklar och kistor - slumpa minst en nyckel och lika många kistor på spelplanen.\n
-    # När man går på en ruta med en nyckel plockar man upp den i sitt inventory.\n
-    # Om man kommer till en kista och har minst en nyckel, öppnar man kistan och plockar upp en\n
-    # skatt som är värd 100 poäng. (Nyckeln är förbrukad.)
     def __init__(self):
         super().__init__(name='key', value=0, symbol='🗝')
 
 class Treasure(Item):
     """ Skatt. Ligger i skattkista. """
-    # TODO: K. Nycklar och kistor - slumpa minst en nyckel och lika många kistor på spelplanen.\n
-    # När man går på en ruta med en nyckel plockar man upp den i sitt inventory.\n
-    # Om man kommer till en kista och har minst en nyckel, öppnar man kistan och plockar upp en\n
-    # skatt som är värd 100 poäng. (Nyckeln är förbrukad.)
     def __init__(self):
         super().__init__(name='treasure', value=100, symbol='👑')
 
